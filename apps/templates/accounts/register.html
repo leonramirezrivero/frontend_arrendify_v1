@@ -131,7 +131,7 @@
 {% block javascripts %}
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script>
-const server = 'http://192.168.2.24:8001';
+const server = 'http://192.168.2.14:8001'
 const configin = {
 headers: {
     'Content-Type': 'application/json',
@@ -159,8 +159,6 @@ let pw2 = document.getElementById("password2").value == ''? 'h':document.getElem
           else {
             let pw = document.getElementById("password").value == ''? 'hola':document.getElementById("password").value
             let pw2 = document.getElementById("password2").value == ''? 'h':document.getElementById("password2").value
-            console.log("pw1",pw)
-            console.log("pw2",pw2)
             if (pw != pw2){
                 Swal.fire({
                     icon: 'error',
@@ -169,7 +167,6 @@ let pw2 = document.getElementById("password2").value == ''? 'h':document.getElem
                   })
             } 
             else{
-                console.log("Registro jojojo")
             let data = {
                 'username': document.getElementById("username").value,
                 'email': document.getElementById("email").value,
@@ -212,11 +209,12 @@ let pw2 = document.getElementById("password2").value == ''? 'h':document.getElem
             })
             setTimeout(() => {
                 console.log("Delayed for 1 second.");
-                window.location.href = `http://192.168.2.24:8000/login/`
+                window.location.href = `/login/`
             }, "2000");
         }
         })
     .catch(error => {
+        console.log("error", error)
         console.log("Datos Incorrectos")
         console.log("no hubo registro")
         // Hacer algo después del inicio de sesión fallido

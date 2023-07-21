@@ -5,6 +5,7 @@
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}
 <link href="/static/assets/css/ms.css" rel="stylesheet"/>
+<link href="/static/assets/css/tabla.css" rel="stylesheet"/>
 {% endblock stylesheets %}
 
 {% block content %}
@@ -43,7 +44,7 @@
     </div>
 </div>
 <div class="card card-body shadow border-0 table-wrapper table-responsive"><!-- podemos agregar la clase => table-responsive-->
-    <table  class="table user-table table-hover align-items-center mb-5"> <!--id="datatable"-->
+    <table class="table user-table table-hover align-items-center mb-5 tabla_datos"> <!--id="datatable"-->
         <thead>
             <tr>
                 <th class="border-bottom"><input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"></th>
@@ -51,11 +52,11 @@
                 <th class="border-bottom">Nombre completo</th>						
                 <th class="border-bottom">Fecha de Registro</th>
                 <th class="border-bottom">Regimen Fiscal</th>
-                <th class="border-bottom">Estatus</th>
+               <!--<th class="border-bottom">Estatus</th> -->
                 <th class="border-bottom">Fiador</th>
                 <th class="border-bottom">Archivos</th>
                 <th class="border-bottom">Acción</th>
-                <th class="border-bottom"></th>
+               <!-- <th class="border-bottom"></th>-->
             </tr>
         </thead>
         <tbody id="table_body">
@@ -654,7 +655,7 @@
                             
                                 <div class="input-div">
                                     <label for="p_inquilino1">Parentesco</label>
-                                    <input class="form-control" id="p_inquilino1" name="p_inquilino1" type="text" placeholder="Parentesco" oninput="prueba2(this)"requerido>
+                                    <input class="form-control" id="p_inquilino1" name="p_inquilino1" type="text" value="Arrendatario"  oninput="prueba2(this)" requerido>
                                 </div>
                             </div> 
                         </div>
@@ -834,7 +835,7 @@
                         <hr class="hr" />
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="checkbox" onChange="javascript:termino();prueba2(this)" value="ACEPTO" style="color:black; text-weight:bold;" id="tyc" name="tyc">
-                            <p style="color:black;padding-left:5px;">Aceptar los <a target="_blank" style="color:blue;" href="/tyc/">Términos y Condiciones</a></p>
+                            <p style="color:black;padding-left:5px;">He leído y acepto los <a target="_blank" style="color:blue;" href="/tyc/">términos y condiciones</a> de uso.</p>
                           </div>
                           
                           
@@ -908,11 +909,14 @@ function cred_vig(radio){
             arr.style.display='';
             bot.style.display='';
             
+            
         }
 
         if(radio.id=="cv_no") {
             arr.style.display='none';
             bot.style.display='';
+            document.getElementById("div-automotriz").style.display='none';
+            document.getElementById("div-hipotecario").style.display='none';
         }
 
         
@@ -1262,9 +1266,10 @@ document.getElementById("li1").onload = auten()
 
 // limpiamos el almacenamiento local cuando regresamos de ver los detalles de un inquilino
 localStorage.removeItem('data_inquilino')
+
     var data_inquilinos =[]
 // Configuracion general de axios
-    const server = 'http://192.168.2.24:8001'
+    const server = 'http://192.168.2.14:8001'
     const configin = {
         headers: {
           'Content-Type': 'application/json',
@@ -1295,7 +1300,7 @@ document.getElementById("cargar_tabla").onload = tabla()
             let col3 = document.createElement('td')
             let col4 = document.createElement('td')
             let col5 = document.createElement('td')
-            let col6 = document.createElement('td')
+        //    let col6 = document.createElement('td')
             let col7 = document.createElement('td')
             let col8 = document.createElement('td')
             let col9 = document.createElement('td')
@@ -1303,6 +1308,92 @@ document.getElementById("cargar_tabla").onload = tabla()
             check.setAttribute("type","checkbox");
             check.setAttribute("class","form-check-input");
 
+            if(res[i].status == "0"){
+            col1.setAttribute("style","background-color:#929292");
+            col2.setAttribute("style","background-color:#929292");
+            col3.setAttribute("style","background-color:#929292");
+            col4.setAttribute("style","background-color:#929292");
+            col5.setAttribute("style","background-color:#929292");
+         
+            col7.setAttribute("style","background-color:#929292");
+            col8.setAttribute("style","background-color:#929292");
+            col9.setAttribute("style","background-color:#929292");
+            
+            check.disabled= true
+            col1.appendChild(check);
+            col2.innerHTML = `<span class="fw-normal ">${i+1}</span>`
+            col3.innerHTML = `<a class="d-flex align-items-center">
+                              <div class="d-block">
+                                <span class="fw-bold">${res[i].nombre + " " +res[i].apellido + " " + res[i].apellido1}</span>
+                                <div class="small text-gray">${res[i].email}</div>
+                              </div>
+                              </a>`
+            col4.innerHTML = `<span class="fw-normal ">${res[i].created}</span>`
+            col5.innerHTML = `<span class="fw-normal ">${res[i].p_fom}</span>`
+           // col6.innerHTML = ' <select id="status{{inq.id}}" style="color:green; font-weight:bold;" class="form-select" onChange="cambio_status(this)" aria-label="Default select example"><option value="Activo" selected style="color:green; font-weight:bold;"><span >Activo</span></option><option value="En espera" style="color:orange; font-weight:bold;">En espera</option><option value="Rechazado" style="color:red; font-weight:bold;">Rechazado</option></select>'
+           //condicion cuanto haya Aval o no
+            if (!res[i].aval[0]){  
+                col7.innerHTML = `<span class="fw-normal ">No hay Fiador</span>`
+            }else{
+                //condicion cuando el Aval es pf
+                if (res[i].aval[0].fiador_obligado == "Fiador Solidario"){
+                    col7.innerHTML = `<span class="fw-normal ">${res[i].aval[0].n_fiador + " " +res[i].aval[0].a_fiador + " " + res[i].aval[0].a2_fiador}</span>`
+                }
+                //condicion cuando el Aval es pm
+                else{
+                    col7.innerHTML = `<span class="fw-normal ">${res[i].aval[0].nombre_comercial}</span>`
+                }
+            }
+            
+            //condicion cuanto haya Archivos o no
+            if (!res[i].archivos[0])
+            {
+                col8.innerHTML = `<button type="button" class="btn btn-primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-arrow-up" viewBox="0 0 16 16">
+                    <path d="M8.5 11.5a.5.5 0 0 1-1 0V7.707L6.354 8.854a.5.5 0 1 1-.708-.708l2-2a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 7.707V11.5z"></path>
+                    <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z"></path>
+                    </svg>
+                    Subir
+              </button>`
+            }
+            else{
+                var prueba = JSON.stringify(res[i])
+                col8.innerHTML = `<button type="button" class="btn btn-primary" >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-arrow-up" viewBox="0 0 16 16">
+                    <path d="M8.5 11.5a.5.5 0 0 1-1 0V7.707L6.354 8.854a.5.5 0 1 1-.708-.708l2-2a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 7.707V11.5z"></path>
+                    <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z"></path>
+                    </svg>
+                    Ver Docs
+              </button>`
+                }
+            col9.innerHTML =   `<div class="btn-group dropstart">
+                                <button class="btn btn-link text-dark dropdown-toggle dropdown-toggle-split " data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <svg class="icon icon-xs" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z"></path></svg>
+                                    <span class="visually-hidden">Toggle Dropdown</span>
+                                </button>
+                                
+                                <div class="dropdown-menu dashboard-dropdown dropdown-menu-start mt-2 py-1">
+                                    <a class="dropdown-item d-flex align-items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-person-fill-x" viewBox="0 0 16 16">
+                                            <path d="M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm-9 8c0 1 1 1 1 1h5.256A4.493 4.493 0 0 1 8 12.5a4.49 4.49 0 0 1 1.544-3.393C9.077 9.038 8.564 9 8 9c-5 0-6 3-6 4Z"/>
+                                            <path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Zm-.646-4.854.646.647.646-.647a.5.5 0 0 1 .708.708l-.647.646.647.646a.5.5 0 0 1-.708.708l-.646-.647-.646.647a.5.5 0 0 1-.708-.708l.647-.646-.647-.646a.5.5 0 0 1 .708-.708Z"/>
+                                          </svg>&nbsp;Prospecto Rechazado
+                                    </a>
+                                </div>   
+                            </div>`; 
+                           
+            tr.appendChild(col1);
+            tr.appendChild(col2);
+            tr.appendChild(col3);
+            tr.appendChild(col4);
+            tr.appendChild(col5);
+          //  tr.appendChild(col6);
+            tr.appendChild(col7);
+            tr.appendChild(col8);
+            tr.appendChild(col9);
+            cuerpo.appendChild(tr);
+        }
+        else{
             col1.appendChild(check);
             col2.innerHTML = `<span class="fw-normal ">${i+1}</span>`
             col3.innerHTML = `<a class="d-flex align-items-center">
@@ -1313,7 +1404,7 @@ document.getElementById("cargar_tabla").onload = tabla()
                               </a>`
             col4.innerHTML = `<span class="fw-normal ">${res[i].created}</span>`
             col5.innerHTML = `<span class="fw-normal ">${res[i].p_fom}</span>`
-            col6.innerHTML = ' <select id="status{{inq.id}}" style="color:green; font-weight:bold;" class="form-select" onChange="cambio_status(this)" aria-label="Default select example"><option value="Activo" selected style="color:green; font-weight:bold;"><span >Activo</span></option><option value="En espera" style="color:orange; font-weight:bold;">En espera</option><option value="Rechazado" style="color:red; font-weight:bold;">Rechazado</option></select>'
+           // col6.innerHTML = ' <select id="status{{inq.id}}" style="color:green; font-weight:bold;" class="form-select" onChange="cambio_status(this)" aria-label="Default select example"><option value="Activo" selected style="color:green; font-weight:bold;"><span >Activo</span></option><option value="En espera" style="color:orange; font-weight:bold;">En espera</option><option value="Rechazado" style="color:red; font-weight:bold;">Rechazado</option></select>'
            //condicion cuanto haya Aval o no
             if (!res[i].aval[0]){  
                 col7.innerHTML = `<span class="fw-normal ">No hay Fiador</span>`
@@ -1375,11 +1466,13 @@ document.getElementById("cargar_tabla").onload = tabla()
             tr.appendChild(col3);
             tr.appendChild(col4);
             tr.appendChild(col5);
-            tr.appendChild(col6);
+          //  tr.appendChild(col6);
             tr.appendChild(col7);
             tr.appendChild(col8);
             tr.appendChild(col9);
             cuerpo.appendChild(tr);
+
+        }
         }
             console.log(response);
         } else{
@@ -1466,7 +1559,8 @@ function checar(){
 
         if(!formulario.hasOwnProperty("no_inquilinos") ){
             formulario.no_inquilinos = '1'
-            formulario.n_inquilino1 = formulario.nombre+ " " + formulario.apellido + " " + formulario.apellido1 
+            formulario.n_inquilino1 = formulario.nombre+ " " + formulario.apellido + " " + formulario.apellido1
+            formulario.p_inquilino1 = "Arrendatario" 
         }
         
         enviar_datos(formulario)

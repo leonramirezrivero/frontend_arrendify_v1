@@ -1,4 +1,4 @@
-const server = 'http://192.168.2.24:8001'
+const server = "http://192.168.2.24:8001";
     document.getElementById("cargar_tabla").onload = plantar()
     
     

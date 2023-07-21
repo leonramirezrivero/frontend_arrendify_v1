@@ -1043,7 +1043,7 @@ function mostrarOnChange() {
 }
 
 
-const server = 'http://192.168.2.24:8001'
+const server = 'http://192.168.2.14:8001'
 const configin = {
     headers: {
       'Content-Type': 'application/json',
@@ -1115,7 +1115,7 @@ function plantar()
     var k1 = Object.getOwnPropertyNames(datos);
     console.log("soy k1",k1)
     // datos generales
-    for(let i= 4; i<=76;i++)
+    for(let i= 5; i<=77;i++)
     {
         let k2 = document.getElementsByName(k1[i]);
        
@@ -1126,13 +1126,11 @@ function plantar()
    
 }
 async function enviar_datos(formulario){
-
    const response = await axios.put(`${server}/fiadores_obligados/${datos.slug}/`,datos,configin)
         console.log("response",response)
         setTimeout(() => {
             window.location.href ="/fiador_obligado/";
         }, "3000");
-        
 }
 </script>
 

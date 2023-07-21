@@ -12,16 +12,14 @@
             <div class="container">
                 <p class="text-center">
                 </p>
-                <div class="row justify-content-center form-bg-image" data-background-lg="/static/assets/img/illustrations/signin.svg">
+                <div class="row justify-content-center form-bg-image" data-background-lg="/static/assets/img/illustrations/signin.svg" >
                     <div class="col-12 d-flex align-items-center justify-content-center">
                         <div class="bg-white shadow border-0 rounded border-light p-4 p-lg-5 w-100 fmxw-500">
                             <div class="text-center text-md-center mb-4 mt-md-0">
                                 <h1 class="mb-0 h3">
-
                                     Sistema de Gestión Inmobiliaria<br> <a href="http://www.arrendify.com"  target="_blank" style="color:blue"> ¡Arrendify! </a> <br>
-
                                 </h1>
-                                <br />
+                                <br/>
                                 <span class="mb-0 text-muted">
                                     {% if msg %}
                                     <span style="color:red">
@@ -58,12 +56,16 @@
                                             </span>
                                             <input name="password" type="password" id="password" class="form-control" aria-labelledby="passwordHelpBlock">
                                         </div>
+                                        <div class="" style="margin-left:210px;">
+                                            <label class="form-check-label mb-0" for="remember">¿Mostrar contraseña?</label>
+                                            <input class="form-check-input" type="checkbox" onChange="mostrarContra()" id="remember" >
+                                        </div>
                                     </div>
                                     <!-- End of Form -->
                                     <div class="d-flex justify-content-between align-items-top mb-4">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" value="" id="remember">
-                                            <label class="form-check-label mb-0" for="remember">
+                                            <input class="form-check-input" type="checkbox" value="" id="remember" checked>
+                                            <label class="form-check-label mb-0 " for="remember">
                                             ¿Mantener sesión iniciada?
                                             </label>
                                         </div>
@@ -76,7 +78,10 @@
                                     <button type="submit" name="login" id="btn_sub" class="btn btn-gray-800">Inicia Sesión</button>
                                 </div>
                             </form>
-                            <br />
+                            <br/>
+                            <div class="d-flex justify-content-center align-items-center mt-4">
+                                <a href="/recuperar_password/" type="button" class="btn btn-link text-success">Recuperar contraseña</a>
+                            </div>
                             <div class="d-flex justify-content-center align-items-center mt-4">
                                 <span class="fw-normal">
                                     &copy; all reserved copyright Arrendify
@@ -94,7 +99,15 @@
 {% block javascripts %}
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script>
-const server = 'http://192.168.2.24:8001';
+function mostrarContra(){
+    var tipo = document.getElementById("password");
+      if(tipo.type == "password"){
+          tipo.type = "text";
+      }else{
+          tipo.type = "password";
+      }
+}
+const server = 'http://192.168.2.14:8001'
 const configin = {
 headers: {
     'Content-Type': 'application/json',
@@ -121,8 +134,7 @@ btn = document.getElementById("btn_sub")
         localStorage.setItem('token', response.data.token);
         localStorage.setItem('usuario', JSON.stringify(response.data.user));
         console.log("Local:",localStorage)
-        window.location.href = 'http://192.168.2.24:8000/dashboard.html'
-
+        window.location.href = '/dashboard.html'
     })
     .catch(error => {
         console.log("Contraseña o nombre de usuario incorrectos")
